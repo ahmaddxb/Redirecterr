@@ -5,7 +5,7 @@
 ```yaml
 services:
   redirecterr:
-    image: varthe/redirecterr:latest
+    image: ghcr.io/ahmaddxb/redirecterr:latest
     container_name: redirecterr
     hostname: redirecterr
     ports:
@@ -110,7 +110,7 @@ filters:
 - `apply`: One or more instance names
 
 > [!TIP]  
-> For a list of possible condition fields see [fields.md](https://github.com/varthe/Redirecterr/blob/main/fields.md)
+> For a list of possible condition fields see [fields.md](fields.md)
 
 ### Sample config
 

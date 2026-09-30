@@ -2,7 +2,7 @@
 
 This is a comprehensive list of possible fields that may appear in incoming request data from Overseerr/Jellyseerr and can be used in filters.
 
-Example values for each field can be found in [filters.test.ts](https://github.com/varthe/Redirecterr/blob/main/filters.test.ts)
+Example values for each field can be found in [filters.test.ts](filters.test.ts)
 
 - `requestedBy_email`
 - `requestedBy_username`
