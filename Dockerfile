@@ -3,7 +3,7 @@ ARG BUN_VERSION=1.2.21
 FROM oven/bun:${BUN_VERSION}-alpine AS base
 WORKDIR /app
 
-COPY package.json bun.lockb* tsconfig.json ./
+COPY package.json bun.lock* bun.lockb* tsconfig.json ./
 
 RUN bun install --production --frozen-lockfile
 

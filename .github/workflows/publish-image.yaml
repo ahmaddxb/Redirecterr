@@ -34,10 +34,18 @@ jobs:
         run: |
           IMAGE_NAME="ghcr.io/${{ github.repository }}"
           IMAGE_NAME=$(echo "$IMAGE_NAME" | tr '[:upper:]' '[:lower:]')
-          TAG_ARGS="-t ${IMAGE_NAME}:latest"
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+
+          TAG_ARGS="-t ${IMAGE_NAME}:latest -t ${IMAGE_NAME}:sha-${SHORT_SHA}"
           if [ -n "${{ github.event.release.tag_name }}" ]; then
             TAG_ARGS="$TAG_ARGS -t ${IMAGE_NAME}:${{ github.event.release.tag_name }}"
           fi
+
           docker buildx create --use
-          docker buildx build --platform linux/amd64,linux/arm64 $TAG_ARGS --push .
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --cache-from type=gha \
+            --cache-to type=gha,mode=max \
+            $TAG_ARGS \
+            --push .
 
