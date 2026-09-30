@@ -42,4 +42,6 @@ export interface ContentRatings {
 export interface PostData {
     mediaType: string
     seasons?: number[]
+    tags?: number[]
+    [key: string]: any
 }

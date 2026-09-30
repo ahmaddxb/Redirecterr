@@ -69,6 +69,7 @@ instances:
     root_folder: /mnt/movies
     # quality_profile_id: 1  # Optional
     # approve: false         # Optional (default is true)
+    # tags: [1, 2]           # Optional: Tag ID(s) in Sonarr/Radarr
 ```
 
 - `server_id`: Starts at 0, increases left to right in Overseerr UI. [Visual example](https://github.com/user-attachments/assets/a7a60d91-0f24-42a9-bbe1-ea4f1c945e6a)
@@ -79,6 +80,7 @@ instances:
   ```
 
 - `approve`: Set to false to disable auto-approval.
+- `tags` (Optional): One or more tag IDs (number or array of numbers) in Sonarr/Radarr to assign to requests sent to this instance.
 
 ### Filters
 
@@ -96,6 +98,7 @@ filters:
       requestedBy_username: user
       max_seasons: 2
     apply: radarr_anime
+    # tags: [3]  # Optional: Tag ID(s) to attach to matching requests
 ```
 
 #### Fields
@@ -108,6 +111,7 @@ filters:
     - `exclude`: None of the values must match
     - `include`: At least one value matches
 - `apply`: One or more instance names
+- `tags` (Optional): One or more tag IDs (number or array of numbers) to attach to matching requests. These will be merged with any instance-level tags.
 
 > [!TIP]  
 > For a list of possible condition fields see [fields.md](fields.md)

@@ -1,13 +1,18 @@
 import logger from "../utils/logger"
 import { config } from "../config"
 import { approveRequest, applyConfig } from "../api/overseerr"
-import { buildDebugLogMessage } from "../utils/helpers"
+import { buildDebugLogMessage, mergeTags } from "../utils/helpers"
 import type { PostData } from "../types"
 
 /**
  * Send request to configured instances
  */
-export const sendToInstances = async (instances: string | string[], requestId: string, data: PostData): Promise<void> => {
+export const sendToInstances = async (
+    instances: string | string[],
+    requestId: string,
+    data: PostData,
+    filterTags?: number | number[]
+): Promise<void> => {
     const instancesArray = Array.isArray(instances) ? instances : [instances]
     
     for (const item of instancesArray) {
@@ -24,6 +29,12 @@ export const sendToInstances = async (instances: string | string[], requestId: s
             postData.rootFolder = instance.root_folder
             postData.serverId = instance.server_id
             if (instance.quality_profile_id) postData.profileId = instance.quality_profile_id
+
+            // Merge instance tags and filter tags
+            const tags = mergeTags(instance.tags, filterTags ?? data.tags)
+            if (tags.length > 0) {
+                postData.tags = tags
+            }
 
             if (logger.isDebugEnabled()) {
                 logger.debug(buildDebugLogMessage("Sending configuration to instance:", { instance: item, postData }))

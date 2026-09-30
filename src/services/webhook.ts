@@ -2,7 +2,7 @@ import logger from "../utils/logger"
 import { config } from "../config"
 import { approveRequest, fetchFromOverseerr } from "../api/overseerr"
 import { getPostData } from "../utils/helpers"
-import { findInstances } from "./filter"
+import { findMatchingFilter } from "./filter"
 import { sendToInstances } from "./instance"
 import { buildDebugLogMessage } from "../utils/helpers"
 import type { Webhook } from "../types"
@@ -63,13 +63,13 @@ export const handleWebhook = async (webhook: Webhook): Promise<Response> => {
             )
         }
 
-        // Find matching instances based on filters
-        const instances = findInstances(webhook, data, config.filters)
+        // Find matching filter
+        const matchingFilter = findMatchingFilter(webhook, data, config.filters)
         const postData = getPostData(webhook)
         
         // Process request based on filter matches
-        if (instances) {
-            await sendToInstances(instances, request.request_id, postData)
+        if (matchingFilter) {
+            await sendToInstances(matchingFilter.apply, request.request_id, postData, matchingFilter.tags)
             return createResponse("success", `Request processed and sent to instances`, 200)
         } else if (config.approve_on_no_match) {
             logger.info(`Approving unmatched request ID ${request.request_id}`)

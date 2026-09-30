@@ -82,3 +82,25 @@ export const buildDebugLogMessage = (message: string, details: Record<string, an
 
     return `${message}\n${formattedDetails}`
 }
+
+/**
+ * Normalizes tags input into an array of integer numbers
+ */
+export const normalizeTags = (tags?: number | number[] | null): number[] => {
+    if (tags === undefined || tags === null) return []
+    const values = Array.isArray(tags) ? tags : [tags]
+    return values
+        .map(Number)
+        .filter((n) => Number.isInteger(n) && n >= 0)
+}
+
+/**
+ * Merges instance tags and filter tags, removing duplicates
+ */
+export const mergeTags = (
+    instanceTags?: number | number[] | null,
+    filterTags?: number | number[] | null
+): number[] => {
+    const combined = [...normalizeTags(instanceTags), ...normalizeTags(filterTags)]
+    return Array.from(new Set(combined))
+}

@@ -42,6 +42,16 @@ const schema: Schema = {
                         approve: {
                             type: "boolean",
                         },
+                        tags: {
+                            anyOf: [
+                                { type: "number" },
+                                {
+                                    type: "array",
+                                    items: { type: "number" },
+                                    minItems: 1,
+                                },
+                            ],
+                        },
                     },
                     required: ["server_id", "root_folder"],
                 },
@@ -110,6 +120,16 @@ const schema: Schema = {
                             {
                                 type: "array",
                                 items: { type: "string" },
+                                minItems: 1,
+                            },
+                        ],
+                    },
+                    tags: {
+                        anyOf: [
+                            { type: "number" },
+                            {
+                                type: "array",
+                                items: { type: "number" },
                                 minItems: 1,
                             },
                         ],

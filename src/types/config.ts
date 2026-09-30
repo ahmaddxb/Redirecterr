@@ -15,6 +15,7 @@ export interface Filter {
     is_4k?: boolean
     conditions?: FilterCondition
     apply: string | string[]
+    tags?: number | number[]
 }
 
 interface InstanceConfig {
@@ -22,6 +23,7 @@ interface InstanceConfig {
     root_folder: string
     quality_profile_id?: number
     approve?: boolean
+    tags?: number | number[]
 }
 
 export interface Config {

@@ -107,10 +107,11 @@ export const matchContentRatings = (contentRatings: ContentRatings, filterCondit
 }
 
 /**
- * Finds the first filter that matches this webhook + media data and returns its `apply` target.
+/**
+ * Finds the first filter that matches this webhook + media data and returns the matching Filter.
  * Prioritizes keys: keywords, contentRatings, max_seasons.
  */
-export const findInstances = (webhook: Webhook, data: MediaData, filters: Filter[]): string | string[] | null => {
+export const findMatchingFilter = (webhook: Webhook, data: MediaData, filters: Filter[]): Filter | null => {
 	try {
 		const matchingFilter = filters.find(({ media_type, is_4k, conditions }) => {
 			if (media_type !== webhook.media.media_type) return false
@@ -216,9 +217,17 @@ export const findInstances = (webhook: Webhook, data: MediaData, filters: Filter
 		}
 
 		logger.info(`Found matching filter at index ${filters.indexOf(matchingFilter)}`)
-		return matchingFilter.apply
+		return matchingFilter
 	} catch (error) {
 		logger.error(`Error finding matching filter: ${error}`)
 		return null
 	}
+}
+
+/**
+ * Finds the first filter that matches this webhook + media data and returns its `apply` target.
+ */
+export const findInstances = (webhook: Webhook, data: MediaData, filters: Filter[]): string | string[] | null => {
+	const matchingFilter = findMatchingFilter(webhook, data, filters)
+	return matchingFilter ? matchingFilter.apply : null
 }

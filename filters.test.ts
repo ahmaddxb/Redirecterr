@@ -1,6 +1,7 @@
 import { describe, it } from "bun:test"
-import { strictEqual } from "assert"
-import { findInstances } from "./src/services/filter"
+import { strictEqual, deepStrictEqual } from "assert"
+import { findInstances, findMatchingFilter } from "./src/services/filter"
+import { mergeTags, normalizeTags } from "./src/utils/helpers"
 
 // --- Webhook and media data ---
 
@@ -571,5 +572,41 @@ describe("Filter Matching Tests", () => {
 		]
 		const result = findInstances(showWebhook as any, showArcaneData as any, filters as any)
 		strictEqual(result, "complex-mixed-test")
+	})
+
+	it("Match a filter and return tags via findMatchingFilter", () => {
+		const filters = [
+			{
+				media_type: "tv" as const,
+				conditions: {
+					keywords: ["power"],
+				},
+				apply: "anime-instance",
+				tags: [10, 20],
+			},
+		]
+		const matched = findMatchingFilter(showWebhook as any, showArcaneData as any, filters as any)
+		strictEqual(matched?.apply, "anime-instance")
+		deepStrictEqual(matched?.tags, [10, 20])
+	})
+
+	it("Normalize tags correctly", () => {
+		deepStrictEqual(normalizeTags(undefined), [])
+		deepStrictEqual(normalizeTags(null), [])
+		deepStrictEqual(normalizeTags(5), [5])
+		deepStrictEqual(normalizeTags([1, 2, 3]), [1, 2, 3])
+	})
+
+	it("Merge and deduplicate instance and filter tags correctly", () => {
+		// Both provided with overlapping tags
+		deepStrictEqual(mergeTags([1, 2], [2, 3]), [1, 2, 3])
+		// Single numbers
+		deepStrictEqual(mergeTags(1, 2), [1, 2])
+		// Instance only
+		deepStrictEqual(mergeTags([5, 6], undefined), [5, 6])
+		// Filter only
+		deepStrictEqual(mergeTags(undefined, [7, 8]), [7, 8])
+		// Neither
+		deepStrictEqual(mergeTags(undefined, undefined), [])
 	})
 })
